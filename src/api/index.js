@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = 'https://travel-advisor.p.rapidapi.com/restaurants/list-in-boundary';
+const url = ;
 
 export const getPlacesData = async (sw , ne ) => {
   try {
@@ -11,8 +11,8 @@ export const getPlacesData = async (sw , ne ) => {
         tr_longitude: ne.lng,
       },
       headers: {
-        'x-rapidapi-key': 'a355aefdbbmsh5aa66cfb77fa789p1a3504jsnb15aba3b5d7f',
-        'x-rapidapi-host': 'travel-advisor.p.rapidapi.com',
+        'x-rapidapi-key': '',
+        'x-rapidapi-host': '',
       },
     });
     return data || []; // Ensure it returns an array
