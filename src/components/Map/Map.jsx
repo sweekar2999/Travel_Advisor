@@ -63,7 +63,7 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
           }}
           style={{ width: '100%', height: '100%' }}
           mapStyle="mapbox://styles/mapbox/streets-v11"
-          mapboxAccessToken="pk.eyJ1Ijoic3dlZWthcjI5OTkiLCJhIjoiY2x6dXM3Y3pzMDA1ODJrcHo4aWRsZmJ4eCJ9.3Mmf0IGxIsMZsTP8-fSFvw"
+          mapboxAccessToken=
           onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
           noTelemetry
           onChange={(e) => {
@@ -85,7 +85,7 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
   }}
   style={{ width: '100%', height: '100%' }}
   mapStyle="mapbox://styles/mapbox/streets-v11"
-  mapboxAccessToken="pk.eyJ1Ijoic3dlZWthcjI5OTkiLCJhIjoiY2x6dXM3Y3pzMDA1ODJrcHo4aWRsZmJ4eCJ9.3Mmf0IGxIsMZsTP8-fSFvw"
+  mapboxAccessToken=""
   onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
   noTelemetry
   onMove={(e) => {
