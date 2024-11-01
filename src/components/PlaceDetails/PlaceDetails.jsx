@@ -1,8 +1,10 @@
 import React from 'react'
-
-function PlaceDetails() {
+import { Typography } from '@mui/material'
+function PlaceDetails({place}) {
   return (
-    <div>PlaceDetails</div>
+    <div>
+      <Typography variant='subtitle1' gutterBottom>{place.name}</Typography>
+    </div>
   )
 }
 
