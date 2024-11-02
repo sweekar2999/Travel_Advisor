@@ -1,14 +1,14 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Map, Marker } from 'react-map-gl';
 import { styled } from '@mui/material/styles';
-import { Paper, Typography, IconButton, Snackbar } from '@mui/material';
-import { Add, Remove } from '@mui/icons-material';
+import { Rating, Paper, Typography, IconButton, Snackbar } from '@mui/material';
+import { Add, LocationOnOutlined, Remove } from '@mui/icons-material';
 
 // Styled Components
 const MapContainer = styled('div')({
   height: '91vh',
   width: '100vw',
-  maxWidth: '1180px',
+  maxWidth: '1080px',
   margin: '0 auto',
   padding: '0 20px',
 });
@@ -19,6 +19,9 @@ const StyledPaper = styled(Paper)({
   flexDirection: 'column',
   justifyContent: 'center',
   width: '100px',
+  '@media (max-width: 600px)': {
+    width: '80px',
+  },
 });
 
 const ControlsContainer = styled('div')({
@@ -30,15 +33,13 @@ const ControlsContainer = styled('div')({
   gap: '10px',
 });
 
-function MapboxMap({ setCoordinates, setBounds, coordinates }) {
-  const mapRef = useRef(); // Reference for map control
-  const [error, setError] = useState(null); // Error state
+function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerClick, markerRefs }) {
+  const mapRef = useRef();
+  const [error, setError] = useState(null);
 
-  // Zoom control functions
   const zoomIn = () => mapRef.current?.zoomIn();
   const zoomOut = () => mapRef.current?.zoomOut();
 
-  // Handle potential errors in map loading
   useEffect(() => {
     const handleError = () => {
       setError("There was an error loading the map. Please check your settings or try again.");
@@ -54,7 +55,7 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
   return (
     <>
       <MapContainer>
-        {/* <Map
+        <Map
           ref={mapRef}
           initialViewState={{
             latitude: coordinates.lat,
@@ -63,43 +64,57 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
           }}
           style={{ width: '100%', height: '100%' }}
           mapStyle="mapbox://styles/mapbox/streets-v11"
-          mapboxAccessToken=
+          mapboxAccessToken="pk.eyJ1Ijoic3dlZWthcjI5OTkiLCJhIjoiY2x6dXM3Y3pzMDA1ODJrcHo4aWRsZmJ4eCJ9.3Mmf0IGxIsMZsTP8-fSFvw"
           onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
           noTelemetry
-          onChange={(e) => {
-            setCoordinates({ lat: e.center.lat, lng: e.center.lng });
-           
+          onMove={(e) => {
+            const { latitude, longitude } = e.viewState;
+            const bounds = e.target.getBounds();
+
+            setCoordinates({ lat: latitude, lng: longitude });
             setBounds({
-              ne:e.marginBounds.ne,
-              sw:e.marginBounds.sw
+              ne: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng },
+              sw: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
             });
           }}
-          
-        > */}
-          <Map
-  ref={mapRef}
-  initialViewState={{
-    latitude: coordinates.lat,
-    longitude: coordinates.lng,
-    zoom: 14,
-  }}
-  style={{ width: '100%', height: '100%' }}
-  mapStyle="mapbox://styles/mapbox/streets-v11"
-  mapboxAccessToken=""
-  onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
-  noTelemetry
-  onMove={(e) => {
-    // Use e.viewState to get the updated center and bounds
-    const { latitude, longitude } = e.viewState;
-    const bounds = e.target.getBounds();
+        >
+          {places?.map((place, i) => {
+            const lat = Number(place.latitude);
+            const lng = Number(place.longitude);
 
-    setCoordinates({ lat: latitude, lng: longitude });
-    setBounds({
-      ne: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng },
-      sw: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
-    });
-  }}
->
+            if (isNaN(lat) || isNaN(lng)) {
+              console.warn(`Invalid coordinates for place: ${place.name}`, { lat, lng });
+              return null;
+            }
+
+            return (
+              <Marker key={i} latitude={lat} longitude={lng}>
+                <StyledPaper onClick={() => onMarkerClick(i)}>
+                  {window.innerWidth <= 600 ? (
+                    <LocationOnOutlined color="primary" fontSize="large" />
+                  ) : (
+                    <>
+                      {place.photo && (
+                        <img
+                          src={place.photo.images.large.url}
+                          alt={place.name}
+                          style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+                        />
+                      )}
+                      <Typography variant="subtitle2">{place.name}</Typography>
+                      <Rating
+                        name={`rating-${i}`}
+                        value={place.rating || 0}
+                        precision={0.5}
+                        readOnly
+                        size="small"
+                      />
+                    </>
+                  )}
+                </StyledPaper>
+              </Marker>
+            );
+          })}
 
           <Marker latitude={coordinates.lat} longitude={coordinates.lng}>
             <StyledPaper>
@@ -107,7 +122,6 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
             </StyledPaper>
           </Marker>
 
-          {/* Custom Zoom Controls */}
           <ControlsContainer>
             <IconButton onClick={zoomIn} color="primary">
               <Add />
@@ -119,7 +133,6 @@ function MapboxMap({ setCoordinates, setBounds, coordinates }) {
         </Map>
       </MapContainer>
 
-      {/* Snackbar for error notifications */}
       <Snackbar
         open={Boolean(error)}
         autoHideDuration={6000}
