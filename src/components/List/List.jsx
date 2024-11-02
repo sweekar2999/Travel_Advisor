@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import PlaceDetails from '../PlaceDetails/PlaceDetails';
-import { CircularProgress, Typography, Grid, InputLabel, MenuItem, FormControl, Select, Grid2 } from '@mui/material';
+import SkeletonLoader from '../Loader/SkeletonLoader'; // Import your preferred loader here
+import { Typography, Grid, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const Container = styled('div')({
@@ -17,13 +18,6 @@ const FormControlStyled = styled(FormControl)(({ theme }) => ({
   marginBottom: '30px',
 }));
 
-const LoadingContainer = styled('div')({
-  height: '600px',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-});
-
 const ListContainer = styled(Grid)(({ theme }) => ({
   height: '75vh',
   overflow: 'auto',
@@ -32,10 +26,9 @@ const ListContainer = styled(Grid)(({ theme }) => ({
   padding: '0 20px',
 }));
 
-function List({ places, scrollToCard, placeRefs }) { // Accept placeRefs as a prop
-  const [type, setType] = useState('restaurants');
-  const [rating, setRating] = useState('');
+function List({ places, scrollToCard, placeRefs, type, setType, rating, setRating, loading }) {
 
+  // Ref handler for each card
   const handleCardRef = (index) => (node) => {
     placeRefs.current[index] = node;
   };
@@ -47,6 +40,8 @@ function List({ places, scrollToCard, placeRefs }) { // Accept placeRefs as a pr
   return (
     <Container>
       <Typography variant='h5'>Restaurants, Hotels & Attractions around you</Typography>
+
+      {/* Filter Controls */}
       <FormControlStyled>
         <InputLabel>Type</InputLabel>
         <Select value={type} onChange={(e) => setType(e.target.value)}>
@@ -55,6 +50,7 @@ function List({ places, scrollToCard, placeRefs }) { // Accept placeRefs as a pr
           <MenuItem value='attractions'>Attractions</MenuItem>
         </Select>
       </FormControlStyled>
+      
       <FormControlStyled>
         <InputLabel>Rating</InputLabel>
         <Select value={rating} onChange={(e) => setRating(e.target.value)}>
@@ -64,13 +60,19 @@ function List({ places, scrollToCard, placeRefs }) { // Accept placeRefs as a pr
           <MenuItem value={4.5}>Above 4.5</MenuItem>
         </Select>
       </FormControlStyled>
-      <ListContainer container spacing={3}>
-        {places?.map((place, i) => (
-          <Grid2 item xs={12} key={i} ref={handleCardRef(i)}>
-            <PlaceDetails place={place} onClick={() => handleMarkerClick(i)} />
-          </Grid2>
-        ))}
-      </ListContainer>
+
+      {/* Conditional Loader */}
+      {loading ? (
+        <SkeletonLoader />  // Replace with your preferred loader
+      ) : (
+        <ListContainer container spacing={3}>
+          {places?.map((place, i) => (
+            <Grid item xs={12} key={i} ref={handleCardRef(i)}>
+              <PlaceDetails place={place} onClick={() => handleMarkerClick(i)} />
+            </Grid>
+          ))}
+        </ListContainer>
+      )}
     </Container>
   );
 }
