@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import PlaceDetails from '../PlaceDetails/PlaceDetails';
-import { CircularProgress, Typography, Grid, InputLabel, MenuItem, FormControl, Select } from '@mui/material';
+import { CircularProgress, Typography, Grid, InputLabel, MenuItem, FormControl, Select, Grid2 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
-// Styled Components
 const Container = styled('div')({
   padding: '15px',
-  maxWidth: '300px', // Reduced width for the main container
-  margin: '0 auto',  // Center the container
-  width: '100%', // Ensure it takes full width of its parent
-  boxSizing: 'border-box', // Include padding in width calculation
+  maxWidth: '400px',
+  margin: '0 auto',
+  width: '100%',
+  boxSizing: 'border-box',
 });
 
 const FormControlStyled = styled(FormControl)(({ theme }) => ({
@@ -29,23 +28,21 @@ const ListContainer = styled(Grid)(({ theme }) => ({
   height: '75vh',
   overflow: 'auto',
   marginTop: theme.spacing(2),
-  maxWidth: '100%',  // Ensure it doesn't exceed container width
-  padding: '0 20px', // Optional: add padding for inner spacing
+  maxWidth: '100%',
+  padding: '0 20px',
 }));
 
-function List() {
+function List({ places, scrollToCard, placeRefs }) { // Accept placeRefs as a prop
   const [type, setType] = useState('restaurants');
   const [rating, setRating] = useState('');
-  const places = [
-    { name: 'Cool Place' },
-    { name: 'Best Place' },
-    { name: 'Good Place' },
-    { name: 'Best Stay' },
-    { name: 'Cool Place' },
-    { name: 'Best Place' },
-    { name: 'Good Place' },
-    { name: 'Best Stay' },
-  ];
+
+  const handleCardRef = (index) => (node) => {
+    placeRefs.current[index] = node;
+  };
+
+  const handleMarkerClick = (index) => {
+    scrollToCard(placeRefs.current[index]);
+  };
 
   return (
     <Container>
@@ -69,9 +66,9 @@ function List() {
       </FormControlStyled>
       <ListContainer container spacing={3}>
         {places?.map((place, i) => (
-          <Grid item xs={12} key={i}>
-            <PlaceDetails place={place} />
-          </Grid>
+          <Grid2 item xs={12} key={i} ref={handleCardRef(i)}>
+            <PlaceDetails place={place} onClick={() => handleMarkerClick(i)} />
+          </Grid2>
         ))}
       </ListContainer>
     </Container>
