@@ -1,7 +1,10 @@
-import React from 'react';
+// Header.js
+import React, { useState } from 'react';
 import { AppBar, Autocomplete, Toolbar, Typography, Box, TextField } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { styled, alpha } from '@mui/material/styles';
+import { getPlacesData } from '../../api';
+import { getCoordinates } from '../../geocodingApi';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -31,7 +34,29 @@ const SearchWrapper = styled('div')(({ theme }) => ({
   },
 }));
 
-function Header() {
+function Header({ setPlaces, setLoading, setCoordinates }) {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const handleSearchChange = (event, value) => {
+    setSearchTerm(value);
+    if (value) {
+      setLoading(true);
+      getCoordinates(value)
+        .then(({ lat, lng }) => {
+          setCoordinates({ lat, lng });
+          return getPlacesData('restaurants', { lat, lng });
+        })
+        .then((data) => {
+          setPlaces(data);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error('Error fetching data:', error);
+          setLoading(false);
+        });
+    }
+  };
+
   return (
     <AppBar position="static">
       <StyledToolbar>
@@ -43,6 +68,8 @@ function Header() {
             <Autocomplete
               freeSolo
               options={[]}
+              inputValue={searchTerm}
+              onInputChange={handleSearchChange}
               renderInput={(params) => (
                 <TextField
                   {...params}
