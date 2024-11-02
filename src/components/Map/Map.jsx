@@ -33,7 +33,7 @@ const ControlsContainer = styled('div')({
   gap: '10px',
 });
 
-function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerClick, markerRefs }) {
+function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerClick, markerRefs}) {
   const mapRef = useRef();
   const [error, setError] = useState(null);
 
@@ -81,9 +81,8 @@ function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerCli
           {places?.map((place, i) => {
             const lat = Number(place.latitude);
             const lng = Number(place.longitude);
-
             if (isNaN(lat) || isNaN(lng)) {
-              console.warn(`Invalid coordinates for place: ${place.name}`, { lat, lng });
+              console.warn(`Invalid coordinates for place: ${place.name}, { lat, lng }`);
               return null;
             }
 
@@ -112,6 +111,7 @@ function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerCli
                     </>
                   )}
                 </StyledPaper>
+              
               </Marker>
             );
           })}
