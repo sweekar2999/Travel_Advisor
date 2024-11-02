@@ -1,5 +1,5 @@
 import axios from 'axios';
-const url = ;
+const url = '';
 
 export const getPlacesData = async (sw , ne ) => {
   try {
@@ -12,7 +12,7 @@ export const getPlacesData = async (sw , ne ) => {
       },
       headers: {
         'x-rapidapi-key': '',
-        'x-rapidapi-host': '',
+        'x-rapidapi-host': ''
       },
     });
     return data || []; // Ensure it returns an array
@@ -24,6 +24,7 @@ export const getPlacesData = async (sw , ne ) => {
     } else {
       console.error("Error:", error.message);
     }
-    return []; // Return an empty array on error to handle gracefully in the app
+    return [];
   }
 };
+
