@@ -1,9 +1,9 @@
 import axios from 'axios';
-const url = '';
+import {useState} from 'react';
 
-export const getPlacesData = async (sw , ne ) => {
+export const getPlacesData = async (type,sw , ne ) => {
   try {
-    const { data: { data } } = await axios.get(url, {
+    const { data: { data } } = await axios.get(`https://travel-advisor.p.rapidapi.com/${type}/list-in-boundary`, {
       params: {
         bl_latitude: sw.lat,
         tr_latitude: ne.lat,
@@ -11,8 +11,8 @@ export const getPlacesData = async (sw , ne ) => {
         tr_longitude: ne.lng,
       },
       headers: {
-        'x-rapidapi-key': '',
-        'x-rapidapi-host': ''
+        'x-rapidapi-key': 'd00d66e1c9mshb682c5f41f7b180p1821fajsn804230f8e652',
+        'x-rapidapi-host': 'travel-advisor.p.rapidapi.com'
       },
     });
     return data || []; // Ensure it returns an array
@@ -24,7 +24,9 @@ export const getPlacesData = async (sw , ne ) => {
     } else {
       console.error("Error:", error.message);
     }
-    return [];
+    return []; // Return an empty array on error to handle gracefully in the app
   }
 };
+
+
 
