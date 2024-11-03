@@ -55,29 +55,30 @@ function MapboxMap({ setCoordinates, setBounds, coordinates, places, onMarkerCli
   return (
     <>
       <MapContainer>
-        <Map
-          ref={mapRef}
-          initialViewState={{
-            latitude: coordinates.lat,
-            longitude: coordinates.lng,
-            zoom: 14,
-          }}
-          style={{ width: '100%', height: '100%' }}
-          mapStyle="mapbox://styles/mapbox/streets-v11"
-          mapboxAccessToken="pk.eyJ1Ijoic3dlZWthcjI5OTkiLCJhIjoiY2x6dXM3Y3pzMDA1ODJrcHo4aWRsZmJ4eCJ9.3Mmf0IGxIsMZsTP8-fSFvw"
-          onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
-          noTelemetry
-          onMove={(e) => {
-            const { latitude, longitude } = e.viewState;
-            const bounds = e.target.getBounds();
+      <Map
+  ref={mapRef}
+  initialViewState={{
+    latitude: coordinates.lat,
+    longitude: coordinates.lng,
+    zoom: 14,
+  }}
+  style={{ width: '100%', height: '100%' }}
+  mapStyle="mapbox://styles/mapbox/navigation-night-v1"
+  mapboxAccessToken="pk.eyJ1Ijoic3dlZWthcjI5OTkiLCJhIjoiY2x6dXM3Y3pzMDA1ODJrcHo4aWRsZmJ4eCJ9.3Mmf0IGxIsMZsTP8-fSFvw"
+  onError={() => setError("Mapbox event blocked. Please check your ad blocker or network settings.")}
+  noTelemetry
+  onMove={(e) => {
+    const { latitude, longitude } = e.viewState;
+    const bounds = e.target.getBounds();
 
-            setCoordinates({ lat: latitude, lng: longitude });
-            setBounds({
-              ne: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng },
-              sw: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
-            });
-          }}
-        >
+    setCoordinates({ lat: latitude, lng: longitude });
+    setBounds({
+      ne: { lat: bounds.getNorthEast().lat, lng: bounds.getNorthEast().lng },
+      sw: { lat: bounds.getSouthWest().lat, lng: bounds.getSouthWest().lng },
+    });
+  }}
+>
+
           {places?.map((place, i) => {
             const lat = Number(place.latitude);
             const lng = Number(place.longitude);
